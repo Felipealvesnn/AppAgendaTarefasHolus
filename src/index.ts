@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import "./shared/container";
 import express from "express";
 import { userRouter } from "./routes/user.routes";
 import { errorHandler } from "./middlewares/errorHandler";
