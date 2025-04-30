@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# Diretório de build
+dist/
+
+# Arquivos de saída do Swagger
+swagger-output.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# VS Code configs
+.vscode/
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
