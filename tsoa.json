@@ -10,7 +10,8 @@
     },
     "routes": {
       "routesDir": "src/routes",
-      "controllerFactory": "src/docs/tsoa-controller-factory.ts"
+      "controllerFactory": "src/docs/tsoa-controller-factory.ts",
+      "iocModule": "src/ioc"
     }
   }
   

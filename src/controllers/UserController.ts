@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Route, Tags, Body, Delete, Path } from "tsoa";
 import { IUserService } from "../interfaces/IUserService";
 import { inject, injectable } from "tsyringe";
-import { User } from "../models/User";
+import { User } from "../generated/prisma";
 
 @Route("users")
 @Tags("Users")

@@ -1,7 +1,8 @@
-import { User } from "../models/User";
+
+import { User } from "../generated/prisma";
 
 export interface IUserService {
-  getAll(): User[];
-  create(name: string): User;
-  delete(id: number): void;
+  getAll(): Promise<User[]>;
+  create(name: string): Promise<User>;
+  delete(id: number): Promise<void>;
 }
