@@ -18,7 +18,7 @@ export class UserController extends Controller {
 
   @Post("/")
   public async createUser(@Body() body: User): Promise<User> {
-    return this.userService.create(body.name || "");
+    return this.userService.create(body || "");
   }
 
   @Delete("/{id}")
