@@ -1,8 +1,15 @@
-
-import { User } from "../generated/prisma";
+import { 
+  CreateUserDto, 
+  UpdateUserDto, 
+  UserResponseDto, 
+  GetAllUsersParams,
+  PaginatedUsersResponse
+} from "../dtos/userDtos";
 
 export interface IUserService {
-  getAll(): Promise<User[]>;
-  create(name: User): Promise<User>;
+  getAll(params: GetAllUsersParams): Promise<PaginatedUsersResponse>;
+  getById(id: number): Promise<UserResponseDto>;
+  create(data: CreateUserDto): Promise<UserResponseDto>;
+  update(id: number, data: UpdateUserDto): Promise<UserResponseDto>;
   delete(id: number): Promise<void>;
 }
