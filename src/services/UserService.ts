@@ -60,11 +60,7 @@ export class UserService implements IUserService {
     const totalPages = Math.ceil(total / limit);
 
     return {
-      data: users.map((user) => ({
-        ...user,
-        lastLogin: user.lastLogin || undefined,
-        profileImageUrl: user.profileImageUrl || undefined,
-      })),
+      data: users.map((user) => this.mapToResponseDto(user)),
       meta: {
         currentPage: page,
         totalPages,
@@ -84,27 +80,22 @@ export class UserService implements IUserService {
       throw new NotFoundError(`Usuário com ID ${id} não encontrado`);
     }
 
-    return {
-      ...user,
-      roles: user.roles,
-      lastLogin: user.lastLogin || undefined,
-      profileImageUrl: user.profileImageUrl || undefined,
-    };
+    return this.mapToResponseDto(user);
   }
 
   async create(data: CreateUserDto): Promise<UserResponseDto> {
     // Validar dados
-    if (!data.name) {
+    if (!data.name?.trim()) {
       throw new BadRequestError("Nome é obrigatório");
     }
 
-    if (!data.email) {
+    if (!data.email?.trim()) {
       throw new BadRequestError("Email é obrigatório");
     }
 
     // Verificar se email já existe
     const existingUser = await this.prisma.user.findUnique({
-      where: { email: data.email },
+      where: { email: data.email.trim().toLowerCase() },
     });
 
     if (existingUser) {
@@ -112,17 +103,9 @@ export class UserService implements IUserService {
     }
 
     // Preparar conexões para roles
-    const roleConnections = [];
-
-    if (data.roleIds && data.roleIds.length > 0) {
-      // Se roleIds fornecido, conectar aos IDs específicos
-      for (const roleId of data.roleIds) {
-        roleConnections.push({ id: roleId });
-      }
-    } else {
-      // Caso contrário, conectar ao role padrão (assumindo role 'user' com ID 1)
-      roleConnections.push({ id: 1 });
-    }
+    const roleConnections = data.roleIds?.length
+      ? data.roleIds.map(id => ({ id }))
+      : [{ id: 1 }]; // Default role 'user'
 
     // Criar usuário
     const user = await this.prisma.user.create({
@@ -140,18 +123,14 @@ export class UserService implements IUserService {
       },
     });
 
-    return {
-      ...user,
-      roles: user.roles,
-      lastLogin: user.lastLogin || undefined,
-      profileImageUrl: user.profileImageUrl || undefined,
-    };
+    return this.mapToResponseDto(user);
   }
 
   async update(id: number, data: UpdateUserDto): Promise<UserResponseDto> {
     // Verificar se usuário existe
     const existingUser = await this.prisma.user.findUnique({
       where: { id },
+      include: { roles: true },
     });
 
     if (!existingUser) {
@@ -162,68 +141,79 @@ export class UserService implements IUserService {
     if (data.email && data.email !== existingUser.email) {
       const emailExists = await this.prisma.user.findUnique({
         where: { email: data.email },
+        select: { id: true },
       });
 
-      if (emailExists) {
+      if (emailExists && emailExists.id !== id) {
         throw new BadRequestError(`Email ${data.email} já está em uso`);
       }
     }
 
     // Preparar dados para atualização
-    const updateData: any = {
-      ...(data.name && { name: data.name.trim() }),
-      ...(data.email && { email: data.email.trim().toLowerCase() }),
-      ...(data.isActive !== undefined && { isActive: data.isActive }),
-      ...(data.profileImageUrl !== undefined && {
-        profileImageUrl: data.profileImageUrl,
-      }),
-    };
+    const updateData: any = {};
+    
+    if (data.name !== undefined) updateData.name = data.name.trim();
+    if (data.email !== undefined) updateData.email = data.email.trim().toLowerCase();
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+    if (data.profileImageUrl !== undefined) updateData.profileImageUrl = data.profileImageUrl;
 
     // Atualizar roles se fornecidos
-    const updateOptions: any = {
-      data: updateData,
-      include: { roles: true },
-    };
-
-    if (data.roleIds && data.roleIds.length > 0) {
-      // Desconectar todas as roles atuais e reconectar as novas
-      updateOptions.data.roles = {
-        set: [],
-        connect: data.roleIds.map((id) => ({ id })),
+    let roleUpdate = {};
+    if (data.roleIds) {
+      roleUpdate = {
+        roles: {
+          disconnect: existingUser.roles.map(role => ({ id: role.id })), // Disconnect all current roles
+          connect: data.roleIds.map(id => ({ id })), // Connect new roles
+        }
       };
     }
 
     // Atualizar usuário
     const user = await this.prisma.user.update({
       where: { id },
+      data: {
+        ...updateData,
+        ...roleUpdate,
+      },
       include: { roles: true },
-
-      ...updateOptions,
     });
 
-    return {
-      ...user,
-      roles: [],
-      lastLogin: user.lastLogin || undefined,
-      profileImageUrl: user.profileImageUrl || undefined,
-    };
+    return this.mapToResponseDto(user);
   }
 
   async delete(id: number): Promise<void> {
     // Verificar se usuário existe
     const existingUser = await this.prisma.user.findUnique({
       where: { id },
+      select: { id: true },
     });
 
     if (!existingUser) {
       throw new NotFoundError(`Usuário com ID ${id} não encontrado`);
     }
 
-    // Em vez de excluir permanentemente, fazemos um "soft delete"
-    // atualizando o campo isActive para false
+    // Soft delete - atualiza isActive para false
     await this.prisma.user.update({
       where: { id },
       data: { isActive: false },
     });
+  }
+
+  // Método auxiliar para mapear o usuário do Prisma para o DTO de resposta
+  private mapToResponseDto(user: PrismaUser & { roles: any[] }): UserResponseDto {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      lastLogin: user.lastLogin || undefined,
+      profileImageUrl: user.profileImageUrl || undefined,
+      roles: user.roles.map(role => ({
+        id: role.id,
+        name: role.name,
+      })),
+    };
   }
 }

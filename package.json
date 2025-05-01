@@ -3,29 +3,40 @@
   "version": "1.0.0",
   "description": "API Node.js + TypeScript",
   "main": "dist/index.js",
- "scripts": {
-  "dev": "npm run tsoa:gen && ts-node-dev --respawn --transpile-only src/index.ts",
-  "build": "tsc",
-  "start": "node dist/index.js",
-  "swagger": "ts-node ./src/swagger.ts",
-  "generate-client": "openapi-generator-cli generate -i openapi.json -g typescript-axios -o ./generated",
-  "tsoa:routes": "tsoa routes",
-  "tsoa:spec": "tsoa spec",
-  "tsoa:gen": "npm run tsoa:routes && npm run tsoa:spec"
-}
-,
+  "scripts": {
+    "dev": "npm run tsoa:gen && ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "swagger": "ts-node ./src/swagger.ts",
+    "generate-client": "openapi-generator-cli generate -i openapi.json -g typescript-axios -o ./generated",
+    "tsoa:routes": "tsoa routes",
+    "tsoa:spec": "tsoa spec",
+    "tsoa:gen": "npm run tsoa:routes && npm run tsoa:spec"
+  },
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "bcryptjs": "^3.0.2",
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "reflect-metadata": "^0.2.2",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0",
-    "tsyringe": "^4.10.0"
+    "tsyringe": "^4.10.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.20.0",
+    "@types/compression": "^1.7.5",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^20.4.2",
     "@types/swagger-ui-express": "^4.1.8",
     "prisma": "^6.7.0",

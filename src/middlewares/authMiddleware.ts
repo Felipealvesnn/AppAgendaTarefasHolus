@@ -24,7 +24,9 @@ export function expressAuthentication(
     const token = request.headers["authorization"]?.split(" ")[1];
 
     if (!token) {
-      return Promise.reject(new UnauthorizedError("Token de autenticação não fornecido"));
+      return Promise.reject(
+        new UnauthorizedError("Token de autenticação não fornecido")
+      );
     }
 
     return new Promise((resolve, reject) => {
@@ -39,10 +41,16 @@ export function expressAuthentication(
         // Verificar permissões (scopes) do usuário
         if (scopes && scopes.length > 0) {
           // Verifica se o usuário tem pelo menos uma das roles necessárias
-          const hasRequiredRole = scopes.some(scope => user.roles.includes(scope));
-          
+          const hasRequiredRole = scopes.some((scope) =>
+            user.roles.includes(scope)
+          );
+
           if (!hasRequiredRole) {
-            reject(new ForbiddenError("Você não tem permissão para acessar este recurso"));
+            reject(
+              new ForbiddenError(
+                "Você não tem permissão para acessar este recurso"
+              )
+            );
             return;
           }
         }
@@ -53,6 +61,8 @@ export function expressAuthentication(
       });
     });
   }
-  
-  return Promise.reject(new UnauthorizedError("Método de autenticação não suportado"));
+
+  return Promise.reject(
+    new UnauthorizedError("Método de autenticação não suportado")
+  );
 }
