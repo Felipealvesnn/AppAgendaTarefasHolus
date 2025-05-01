@@ -1,17 +1,16 @@
 {
-    "entryFile": "src/index.ts",
-    "noImplicitAdditionalProperties": "throw-on-extras",
-    "controllerPathGlobs": [
-      "src/controllers/*.ts"
-    ],
-    "spec": {
-      "outputDirectory": "src/docs",
-      "specVersion": 3
-    },
-    "routes": {
-      "routesDir": "src/routes",
-      "controllerFactory": "src/docs/tsoa-controller-factory.ts",
-      "iocModule": "src/ioc"
-    }
+  "entryFile": "src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "bodyCoercion": true,
+  "controllerPathGlobs": [
+    "src/controllers/*.ts"
+  ],
+  "spec": {
+    "outputDirectory": "src/docs",
+    "specVersion": 3
+  },
+  "routes": {
+    "routesDir": "src/routes",
+    "iocModule": "src/ioc/tsoa-controller-factory.ts"
   }
-  
+}
