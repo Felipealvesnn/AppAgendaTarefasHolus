@@ -3,6 +3,7 @@ node_modules/
 
 # Diretório de build
 dist/
+package-lock.json
 
 # Arquivos de saída do Swagger
 swagger-output.json
