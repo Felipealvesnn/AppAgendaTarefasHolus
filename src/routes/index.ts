@@ -1,13 +1,16 @@
 import { Router } from "express";
 import swaggerUi from "swagger-ui-express";
-import { userRouter } from "./user.routes";
-import swaggerDocument from "../swagger-output.json";
+// import { userRouter } from "./user.routes";
+import swaggerDocumentd from "../docs/swagger.json"; // ou o caminho gerado pelo tsoa
+import { RegisterRoutes } from "./routes";
+
 
 
 const router = Router();
 
-router.use("/users", userRouter);
+//router.use("/users", userRouter);
+RegisterRoutes(router);
 
-router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocumentd));
 
 export default router;

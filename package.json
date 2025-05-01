@@ -3,19 +3,24 @@
   "version": "1.0.0",
   "description": "API Node.js + TypeScript",
   "main": "dist/index.js",
-  "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "swagger": "ts-node ./src/swagger.ts",
-    "generate-client": "openapi-generator-cli generate -i openapi.json -g typescript-axios -o ./generated"
-  },
+ "scripts": {
+  "dev": "npm run tsoa:gen && ts-node-dev --respawn --transpile-only src/index.ts",
+  "build": "tsc",
+  "start": "node dist/index.js",
+  "swagger": "ts-node ./src/swagger.ts",
+  "generate-client": "openapi-generator-cli generate -i openapi.json -g typescript-axios -o ./generated",
+  "tsoa:routes": "tsoa routes",
+  "tsoa:spec": "tsoa spec",
+  "tsoa:gen": "npm run tsoa:routes && npm run tsoa:spec"
+}
+,
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
     "reflect-metadata": "^0.2.2",
     "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.6.0",
     "tsyringe": "^4.10.0"
   },
   "devDependencies": {

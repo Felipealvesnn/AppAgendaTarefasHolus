@@ -1,34 +1,28 @@
-import { Request, Response, NextFunction } from "express";
-import { inject, injectable } from "tsyringe";
+import { Controller, Get, Post, Route, Tags, Body, Delete, Path } from "tsoa";
 import { IUserService } from "../interfaces/IUserService";
+import { inject, injectable } from "tsyringe";
+import { User } from "../models/User";
 
+@Route("users")
+@Tags("Users")
 @injectable()
-export class UserController {
-  constructor(
-    @inject("IUserService") private userService: IUserService
-  ) {}
-
-  getAllUsers(req: Request, res: Response) {
-    const users = this.userService.getAll();
-    res.json(users);
+export class UserController extends Controller {
+  constructor(@inject("IUserService") private userService: IUserService) {
+    super();
   }
 
-  createUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const user = this.userService.create(req.body.name);
-      res.status(201).json(user);
-    } catch (error) {
-      next(error);
-    }
+  @Get("/")
+  public async getAllUsers(): Promise<User[]> {
+    return this.userService.getAll();
   }
 
-  deleteUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = parseInt(req.params.id);
-      this.userService.delete(id);
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+  @Post("/")
+  public async createUser(@Body() body: User): Promise<User> {
+    return this.userService.create(body.name || "");
+  }
+
+  @Delete("/{id}")
+  public async deleteUser(@Path() id: number): Promise<void> {
+    this.userService.delete(id);
   }
 }
