@@ -9,7 +9,8 @@
       "specVersion": 3
     },
     "routes": {
-      "routesDir": "src/routes"
+      "routesDir": "src/routes",
+      "controllerFactory": "src/docs/tsoa-controller-factory.ts"
     }
   }
   
