@@ -1,16 +1,21 @@
 {
   "entryFile": "src/index.ts",
-  "noImplicitAdditionalProperties": "throw-on-extras",
-  "bodyCoercion": true,
-  "controllerPathGlobs": [
-    "src/controllers/*.ts"
-  ],
+  "controllerPathGlobs": ["src/controllers/*.ts"],
   "spec": {
     "outputDirectory": "src/docs",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
   },
   "routes": {
     "routesDir": "src/routes",
-    "iocModule": "src/ioc/tsoa-controller-factory.ts"
-  }
+     "iocModule": "src/ioc/tsoa-controller-factory.ts"
+  },
+  "iocModule": "src/shared/tsoaIoc.ts",
+  "authenticationModule": "src/middlewares/authMiddleware.ts"
 }

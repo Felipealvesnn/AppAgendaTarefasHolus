@@ -59,7 +59,7 @@ export class UserController extends Controller {
    * Retorna um usuário pelo ID
    */
   @Get("/{id}")
-  // @Security("jwt")
+   @Security("jwt")
   @Response<NotFoundError>(404, "Usuário não encontrado")
   public async getUserById(@Path() id: number): Promise<UserResponseDto> {
     return this.userService.getById(id);
@@ -69,7 +69,7 @@ export class UserController extends Controller {
    * Cria um novo usuário
    */
   @Post("/")
-  // @Security("jwt", ["admin"])
+   @Security("jwt", ["admin"])
   @SuccessResponse(201, "Usuário criado com sucesso")
   public async createUser(@Body() body: CreateUserDto): Promise<UserResponseDto> {
     const user = await this.userService.create(body);
@@ -81,7 +81,7 @@ export class UserController extends Controller {
    * Atualiza um usuário existente
    */
   @Put("/{id}")
-  // @Security("jwt", ["admin"])
+   @Security("jwt", ["admin"])
   @Response<NotFoundError>(404, "Usuário não encontrado")
   public async updateUser(
     @Path() id: number, 
@@ -94,7 +94,7 @@ export class UserController extends Controller {
    * Remove um usuário (soft delete)
    */
   @Delete("/{id}")
-  // @Security("jwt", ["admin"])
+   @Security("jwt", ["admin"])
   @Response<NotFoundError>(404, "Usuário não encontrado")
   @SuccessResponse(204, "Usuário removido com sucesso")
   public async deleteUser(@Path() id: number): Promise<void> {
