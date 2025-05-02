@@ -47,4 +47,7 @@ app.use("/api", router);
 // Handler de erros global
 app.use(errorHandler);
 
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+});
 // Trat
