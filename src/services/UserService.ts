@@ -1,4 +1,5 @@
 import { injectable, inject } from "tsyringe";
+import bcrypt from "bcryptjs";
 import { PrismaClient, User as PrismaUser } from "../generated/prisma";
 import { IUserService } from "../interfaces/IUserService";
 import {
@@ -106,14 +107,14 @@ export class UserService implements IUserService {
     const roleConnections = data.roleIds?.length
       ? data.roleIds.map(id => ({ id }))
       : [{ id: 1 }]; // Default role 'user'
-
+     var passwordHash = data.password ? await bcrypt.hash(data.password, 10) : null;
     // Criar usuário
     const user = await this.prisma.user.create({
       data: {
         name: data.name.trim(),
         email: data.email.trim().toLowerCase(),
         profileImageUrl: data.profileImageUrl,
-        password: data.password || '', // Add required password field
+        password: passwordHash || '', // Add required password field
         empresaId: data.empresaId || 1, // Add required empresa field with default value
         isActive: true,
         roles: {
