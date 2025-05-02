@@ -113,6 +113,8 @@ export class UserService implements IUserService {
         name: data.name.trim(),
         email: data.email.trim().toLowerCase(),
         profileImageUrl: data.profileImageUrl,
+        password: data.password || '', // Add required password field
+        empresaId: data.empresaId || 1, // Add required empresa field with default value
         isActive: true,
         roles: {
           connect: roleConnections,

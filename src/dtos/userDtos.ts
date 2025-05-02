@@ -12,6 +12,7 @@ export interface UserResponseDto {
   email: string;
   isActive: boolean;
   createdAt: Date;
+  empresaId?: number;
   updatedAt: Date;
   lastLogin?: Date;
   profileImageUrl?: string;
@@ -23,6 +24,7 @@ export interface CreateUserDto {
   name: string;
   email: string;
   password?: string;
+  empresaId: number;
   roleIds?: number[];
   profileImageUrl?: string;
 }
