@@ -300,10 +300,22 @@
 			}
 		},
 		"securitySchemes": {
-			"jwt": {
+			"api_key": {
 				"type": "apiKey",
-				"in": "header",
-				"name": "Authorization"
+				"name": "access_token",
+				"in": "query"
+			},
+			"tsoa_auth": {
+				"type": "oauth2",
+				"flows": {
+					"implicit": {
+						"authorizationUrl": "http://swagger.io/api/oauth/dialog",
+						"scopes": {
+							"write:pets": "modify things",
+							"read:pets": "read things"
+						}
+					}
+				}
 			}
 		}
 	},

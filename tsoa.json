@@ -4,17 +4,26 @@
   "spec": {
     "outputDirectory": "src/docs",
     "specVersion": 3,
-    "securityDefinitions": {
-      "jwt": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
-      }
+   "securityDefinitions": {
+        "api_key": {
+            "type": "apiKey",
+            "name": "access_token",
+            "in": "query"
+        },
+        "tsoa_auth": {
+            "type": "oauth2",
+            "authorizationUrl": "http://swagger.io/api/oauth/dialog",
+            "flow": "implicit",
+            "scopes": {
+                "write:pets": "modify things",
+                "read:pets": "read things"
+            }
+        }
     }
   },
   "routes": {
     "routesDir": "src/routes",
-     "iocModule": "src/ioc/tsoa-controller-factory.ts"
+    "iocModule": "src/ioc/tsoa-controller-factory.ts"
   },
   "iocModule": "src/shared/tsoaIoc.ts",
   "authenticationModule": "src/middlewares/authMiddleware.ts"

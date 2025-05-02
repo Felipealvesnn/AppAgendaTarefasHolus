@@ -36,7 +36,6 @@ export class UserController extends Controller {
    * Retorna uma lista paginada de usuários
    */
   @Get("/")
-  //@Security("jwt", ["admin", "manager"])
   public async getAllUsers(
     @Query() page: number = 1,
     @Query() limit: number = 10,

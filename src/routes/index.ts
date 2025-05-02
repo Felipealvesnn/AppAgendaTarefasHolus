@@ -11,6 +11,10 @@ const router = Router();
 //router.use("/users", userRouter);
 RegisterRoutes(router);
 
-router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocumentd));
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocumentd, {
+  swaggerOptions: {
+    persistAuthorization: true,  // Mantém a configuração de autenticação
+  }
+}));
 
 export default router;
