@@ -30,10 +30,10 @@ export class AuthService implements IAuthService {
 
     // Em um sistema real, verificaríamos a senha hash aqui
     // Por exemplo:
-    // const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
-    // if (!isPasswordValid) {
-    //   throw new UnauthorizedError("Credenciais inválidas");
-    // }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedError("Credenciais inválidas");
+    }
 
     // Criar o payload do token
     const tokenPayload = {
