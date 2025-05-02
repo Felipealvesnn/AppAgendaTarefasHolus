@@ -5,6 +5,11 @@ export interface RoleDto {
   name: string;
 }
 
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}
+
 // DTO para retornar dados do usuário
 export interface UserResponseDto {
   id: number;

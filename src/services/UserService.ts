@@ -1,3 +1,4 @@
+// UserService.ts (com melhorias)
 import { injectable, inject } from "tsyringe";
 import bcrypt from "bcryptjs";
 import { PrismaClient, User as PrismaUser } from "../generated/prisma";
@@ -8,11 +9,16 @@ import {
   UserResponseDto,
   GetAllUsersParams,
   PaginatedUsersResponse,
+  ChangePasswordDto,
 } from "../dtos/userDtos";
 import { BadRequestError, NotFoundError } from "../middlewares/errorHandler";
+import { env } from "../config/env";
 
 @injectable()
 export class UserService implements IUserService {
+  // Fator de custo para o hash bcrypt - idealmente em variável de ambiente
+  private readonly BCRYPT_COST = env.BCRYPT_COST || 12;
+  
   constructor(@inject("PrismaClient") private prisma: PrismaClient) {}
 
   async getAll(params: GetAllUsersParams): Promise<PaginatedUsersResponse> {
@@ -94,6 +100,10 @@ export class UserService implements IUserService {
       throw new BadRequestError("Email é obrigatório");
     }
 
+    if (!data.password) {
+      throw new BadRequestError("Senha é obrigatória");
+    }
+
     // Verificar se email já existe
     const existingUser = await this.prisma.user.findUnique({
       where: { email: data.email.trim().toLowerCase() },
@@ -103,18 +113,21 @@ export class UserService implements IUserService {
       throw new BadRequestError(`Email ${data.email} já está em uso`);
     }
 
+    // Hash da senha
+    const passwordHash = await bcrypt.hash(data.password, this.BCRYPT_COST);
+
     // Preparar conexões para roles
     const roleConnections = data.roleIds?.length
       ? data.roleIds.map(id => ({ id }))
       : [{ id: 1 }]; // Default role 'user'
-     var passwordHash = data.password ? await bcrypt.hash(data.password, 10) : null;
+
     // Criar usuário
     const user = await this.prisma.user.create({
       data: {
         name: data.name.trim(),
         email: data.email.trim().toLowerCase(),
         profileImageUrl: data.profileImageUrl,
-        password: passwordHash || '', // Add required password field
+        password: passwordHash,
         empresaId: data.empresaId || 1, // Add required empresa field with default value
         isActive: true,
         roles: {
@@ -182,6 +195,65 @@ export class UserService implements IUserService {
     });
 
     return this.mapToResponseDto(user);
+  }
+
+  async changePassword(id: number, data: ChangePasswordDto): Promise<void> {
+    const { currentPassword, newPassword } = data;
+
+    if (!currentPassword || !newPassword) {
+      throw new BadRequestError("Senha atual e nova senha são obrigatórias");
+    }
+
+    // Verificar se usuário existe
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { id: true, password: true },
+    });
+
+    if (!user) {
+      throw new NotFoundError(`Usuário com ID ${id} não encontrado`);
+    }
+
+    // Verificar senha atual
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      throw new BadRequestError("Senha atual inválida");
+    }
+
+    // Gerar hash da nova senha
+    const passwordHash = await bcrypt.hash(newPassword, this.BCRYPT_COST);
+
+    // Atualizar senha
+    await this.prisma.user.update({
+      where: { id },
+      data: { password: passwordHash },
+    });
+  }
+
+  async resetPassword(id: number, newPassword: string): Promise<void> {
+    // Método para administradores resetarem a senha de um usuário
+    if (!newPassword) {
+      throw new BadRequestError("Nova senha é obrigatória");
+    }
+
+    // Verificar se usuário existe
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!user) {
+      throw new NotFoundError(`Usuário com ID ${id} não encontrado`);
+    }
+
+    // Gerar hash da nova senha
+    const passwordHash = await bcrypt.hash(newPassword, this.BCRYPT_COST);
+
+    // Atualizar senha
+    await this.prisma.user.update({
+      where: { id },
+      data: { password: passwordHash },
+    });
   }
 
   async delete(id: number): Promise<void> {

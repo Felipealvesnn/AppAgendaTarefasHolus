@@ -15,4 +15,7 @@ export const env = {
     NODE_ENV: getEnvVar("NODE_ENV"),
     JWT_SECRET: getEnvVar("JWT_SECRET"),
     DATABASE_URL: getEnvVar("DATABASE_URL"),
+    BCRYPT_COST: parseInt(getEnvVar("BCRYPT_COST"), 10),
+    REFRESH_TOKEN_EXPIRY: getEnvVar("REFRESH_TOKEN_EXPIRY"),
+    ACCESS_TOKEN_EXPIRY: getEnvVar("ACCESS_TOKEN_EXPIRY"),
 };
