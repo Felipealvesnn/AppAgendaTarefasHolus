@@ -43,6 +43,10 @@
 						"type": "string",
 						"format": "date-time"
 					},
+					"empresaId": {
+						"type": "number",
+						"format": "double"
+					},
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
@@ -151,6 +155,10 @@
 					"password": {
 						"type": "string"
 					},
+					"empresaId": {
+						"type": "number",
+						"format": "double"
+					},
 					"roleIds": {
 						"items": {
 							"type": "number",
@@ -164,7 +172,8 @@
 				},
 				"required": [
 					"name",
-					"email"
+					"email",
+					"empresaId"
 				],
 				"type": "object",
 				"additionalProperties": true

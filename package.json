@@ -4,7 +4,7 @@
   "description": "API Node.js + TypeScript",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "npm run tsoa:gen && ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "swagger": "ts-node ./src/swagger.ts",
