@@ -15,10 +15,12 @@ export interface AuthenticatedRequest extends Request {
   user?: AuthenticatedUser;
 }
 
-export function expressAuthentication(
+// Exportamos a função original com o nome esperado pelo TSOA
+export function expressAuthenticationRecasted(
   request: AuthenticatedRequest,
   securityName: string,
-  scopes?: string[]
+  scopes?: string[],
+  response?: any
 ): Promise<AuthenticatedUser> {
   if (securityName === "jwt") {
     const token = request.headers["authorization"]?.split(" ")[1];
@@ -65,4 +67,14 @@ export function expressAuthentication(
   return Promise.reject(
     new UnauthorizedError("Método de autenticação não suportado")
   );
+}
+
+// Mantemos a função original para compatibilidade com código existente
+export function expressAuthentication(
+  request: AuthenticatedRequest,
+  securityName: string,
+  scopes?: string[],
+  response?: any
+): Promise<AuthenticatedUser> {
+  return expressAuthenticationRecasted(request, securityName, scopes, response);
 }

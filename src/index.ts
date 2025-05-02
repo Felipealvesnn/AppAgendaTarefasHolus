@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(loggerMiddleware);
 
 // Rotas da API
-app.use("/api", router);
+app.use( router);
 
 // Handler de erros global
 app.use(errorHandler);
