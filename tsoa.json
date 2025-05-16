@@ -23,6 +23,7 @@
   },
   "routes": {
     "routesDir": "src/routes",
+   "authenticationModule": "src/middlewares/authMiddleware.ts",
     "iocModule": "src/ioc/tsoa-controller-factory.ts"
   },
   "iocModule": "src/shared/tsoaIoc.ts",
